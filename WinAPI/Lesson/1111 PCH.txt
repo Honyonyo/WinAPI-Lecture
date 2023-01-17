@@ -1,0 +1,5 @@
+precompiled header
+#include "stdafx.h"
+자주 사용하는 기능은 헤더에.
+	메모리를 조금 더 쓴다.
+	전처리기와 컴파일러의 부하를 줄인다.

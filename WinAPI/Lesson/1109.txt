@@ -1,0 +1,36 @@
+gdi
+bmp만 지원.
+행열연산 불가
+
+GDI+
+bmp png jpg지원,
+회전.
+최적화에 대한 예외처리 필요.
+(화질은 어마무시한데 프레임이 아작나는 초고화질 일러스트 배경화면..같은 느낌)
+
+D2D
+SDK정석활용방식과 비공식활용방식이 있다.
+(라이브러리를 추가해서 선택적으로 활용하는 방식이 있다..)
+
+winAPI를 중점으로 하고, winAPI가 가지는 단점들을 외부 라이브러리나 C++로 커버하는 것을 보여주는 용도의 포폴
+
+        /*
+        strcpy(a, b) : b를 a에복사
+        strcat(x, y) : x+y
+        strlen(a, b) : 문자열 길이
+        strcmp(x, y) : 문자열이 같은지 확인
+            - 같을 때 : 0 
+            - x < y   : -1
+            - x > y   : 1
+        
+        strlen > wcslen > _tcslen   문자열 길이
+        strcpy > wcscpy > _tcscpy   문자열 복사
+        strcmp > wcscmp > _tcscmp   문자열 비교
+        strcat > wcscat > _tcscat   문자열 이어붙이기
+        strtok > scstok > _tcstok   문자열 자르기
+        strchr > scschr > _tcschr   문자 찾기
+        strstr > scsstr > _tcsstr   문자열 찾기
+
+        */
+        
+TextOut(hdc, 300, 300, "과제가 넘모 잼있다~^^", strlen("과제가 넘모 잼있다~^^"));   //글자, 글자확인

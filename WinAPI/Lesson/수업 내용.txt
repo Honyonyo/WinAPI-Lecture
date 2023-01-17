@@ -1,0 +1,269 @@
+#include <Windows.h>
+#include <tchar.h>
+
+#pragma region 윈도우API
+/*
+* API (Application Programming Interface)
+    (//게임 시장점유율이 win>>>>>>>>>mac이라서.. winAPI위주로 겅부하는게 시장성 높음음)
+
+    ★- 운영체제가 응용프로그램 개발을 위해 제공하는 서브루틴 또는 함수의 집합
+
+    - 명령어의 집합으로 어플리케이션 프로그램에서 오퍼레이팅 시스템의 기본적인 기능을 사용할 필요가 있을 경우 API에서 명령어 호출이 진행된다.
+
+    하드웨어---------------운영체제(win)-------------응용프로그램
+    (API함수)              ...            
+    ★▶ 장 점
+    - 운영체제가 같으면 같은 기능의 집합을 사용하기에 확장성 및 연동성, 그리고 유지보수가 편리함.
+    - 윈도우즈 != 리눅스 
+    - 윈도우즈에서 지원하는 다양한 라이브러리 지원 가능
+        커스텀 추가 라이브러리를 추가해서 단일플랫폼으로 쓰지 않고 부족한점 보완하고 필요에 따라 다양한 기능을 추가하는거야!
+
+    ★▶ 단 점
+    - 플랫폼 고착화 (오래 전 C로 만들어져서 최신 하드에는 맞지 않을 수 있다. (gpu 등등))
+        └라이브러리 가져와서 사용하면 해결 빠밤!┘
+    
+    ▶ API구조
+    ★- 크게 진입점, ★메세지 루프, ★Window Procedure로 나뉜다.
+        프로시저에서 메세지를 발생시키고,
+        반복문을 통해 전달해준다.
+        실행 > 인스턴스 > 진입점 > 확인(컴파일러가 작업) > 프로시저 메세지 반복문 메세지루프로 전달, 메세지 get인지 pick?인지에 따라 윈도우즈로 전달하거나 계속소통하거나
+            cpu클럭에 넣기       창 띄우기 위한 세팅     프로시저에 작성된 문을 메세지 형태로 읽어들인다
+
+예외처리 PCH 은닉화 대리자
+...!
+
+
+* 
+WCHAR : 유니코드
+* 
+*/
+#pragma region
+
+// 전역 변수: 인스턴스와 핸들
+/*인스턴스
+    : 윈도우 Os가 현재 실행되고있는 프로그램을 확인하기 위한 값.
+        -같은 프로그램이면 같은 인스턴스 값을 가진    다.
+            클래스가 메모리에 실제로 구현된 실체
+        - 실행되고 있는 각가의 프로그램들
+*/
+HINSTANCE _hInstance;                                // 현재 인스턴스입니다.
+
+//윈도우핸들 : 윈도우 창
+HWND _hWnd;
+/*
+* LPSTR long pointer string
+* LPCSTR const charactor point
+* LPCTSTR const tchar
+* 
+▶ Tchar
+- 프로젝트의 문자셋 설정에 따라 자동적으로 char또는 wchar_t로 type casting되는 중간 매크로 자료형이다.
+- 멀티바이트와 유니코드 환경에서 별도의 수정작업 없이 프로그램을 구동하기 위해서는 TCHAR형으로 문자열을 표현하는 것을 추천.
+
+일반적으로 윈도우 응용프로그램에서 문자열 상수를 쓰기 위해서는 중간 설정에 따라 char* 또는 wchar_t*로 변환해주는 _T 매크로를 사용해야한다.
+* 
+* 
+*/
+LPTSTR _lpszClass = TEXT("Windows API");
+TCHAR* pszString = _T("Windows API");
+// 콜백! WinAPI에서는 델리게이트 기본으로 지원은 안하기 때문에 #define으로 정의해서 사용한다~
+    //체인링을 껴줄 수 있다. 묶여있는애들을 한번에 OUT시킬 수 있다는게 매우 용이하다. 예) 챕터시스템! (재방문 불가한 이전챕터를 밀어버리는 것)
+LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
+
+
+/*
+hInstance 프로그램 인스턴스 핸들
+hPrevInstance 이전에 실행된 인스턴스 핸들
+lpszCmdParam 명령형으로 입력된 프로그램 인수(자)
+nCmdShow 프로그램이 시작될 형태 (최소화 보통크기 전체창 등 등 등....)
+
+*/
+//오류를 최소화하는 범용적인 예외처리 현업식 코드
+//int WINAPI _tWinMain(HINSTANCE hInstance,
+//                    HINSTANCE hPrevInstance,
+//                    TCHAR*     lpszCmdParam,
+//                    int       nCmdShow)
+
+//메 인 함 수! 듀듕 
+int APIENTRY WinMain(HINSTANCE hInstance,
+                    HINSTANCE hPrevInstance,
+                    LPSTR     lpszCmdParam,
+                    int       nCmdShow)
+{
+    _hInstance = hInstance;
+/*
+   ▶ WinMain의 역할
+        1. 윈도우 창을 셋팅 후 화면에 띄우기
+        └ 화면에 창을 띄우기 위해서는 4가지를 모두 처리해야한다.
+            -1.윈도우 구조체 선언과 초기화
+            -2.윈도우 클래스 등록
+            -3.화면에 보여줄 윈도우 창 생성
+            -4.화면에 윈도우 창 보여주기
+
+        2. 메세지 루프
+
+*/
+
+    //1-1. 윈도우 구조체 선언 및 초기화
+    //참고 WNDCLASSEXW : 윈도우 상위버전 지원을 위한 확장기능
+    WNDCLASS wndClass;
+    /*
+    WNDCLASS 윈도우창의 정보를 저장하기 위한 구조체
+    └ WNDCLASS구조체는 윈도우즈운영체제에게 윈도우 생성을 명령하기 위해서 커스텀한 윈도우를 식별할 수 있는 정보들을 기록하는 역할을 한다.
+    */
+
+    //메모리
+    wndClass.cbClsExtra = 0;                                                    //클래스 여분 메모리
+    wndClass.cbWndExtra = 0;                                                    //윈도우 여분 메모리
+    //화면
+    wndClass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);               //백그라운드. 페이드 인아웃이 들어갈 수 있도록 여지를 준 get stock object
+    wndClass.hCursor = LoadCursor(NULL, IDC_ARROW);                             //마우스커서. 아이콘 이미지 기본화살표 그냥 쓸꺼양
+    wndClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);                           //아이콘. 안쓸건데, 기본지원으로 그냥 세팅해둬.
+    //윈도우 정보, 속성
+    wndClass.hInstance = hInstance;                                             //윈도우를 소요한 프로그램의 식별자 정보
+    wndClass.lpfnWndProc = (WNDPROC)WndProc;                                    //윈도우 프로시져(현재 프로젝트에서 사용할)
+    wndClass.lpszClassName = _lpszClass;                                        //클래스 이름 (윈도우 클래스 식별자 정보)
+    
+    wndClass.lpszMenuName = NULL;                                               //메뉴 이름. 지금 안쓸꺼야~
+    wndClass.style = CS_HREDRAW | CS_VREDRAW;                                   //윈도우 스타일 (윈도우 다시그리기 정보)
+
+
+    //1-2. 윈도우 클래스 등록
+    RegisterClass(&wndClass);
+
+    //1-3. 화면에 보여줄 윈도우 창 생성
+    _hWnd = CreateWindow    //사용하는 일이 많으므로 친구하자^^
+    (
+        _lpszClass,     //윈도우 클래스 식별자
+        _lpszClass,     //윈도우 타이틀 바 이름
+        WS_OVERLAPPEDWINDOW,    //윈도우 스타일
+        400,            //윈도우 화면 X좌표
+        100,            //윈도우 화면 Y좌표
+        800,            //윈도우 화면 가로크기
+        800,            //윈도우 화면 세로크기
+        NULL,//부모 윈도우 지정 여부 (없으면 NULL, 그치만안정성높은건 GetDesktopWindow())
+        (HMENU)NULL,    //메뉴 핸들
+        hInstance,      //인스턴스 지정
+        NULL            //윈도우의 자식 윈도우를 생성하면 지정하고 아니라면 NULL_아마 메세지창..?경고창/
+                            //필요에 의해서 사용. 지금은 null
+    );
+
+    //1-4. 화면에 윈도우 창 보여주기
+    ShowWindow(_hWnd, nCmdShow);
+
+    // 간단한 프로젝트 요청에 화답하기 위한 옵션들 1-3에서의 GetDesktopWindow(),     아래 UpdateWindow(_hWnd);  MSG message;  ZeroMemory(&message, sizeof(message));
+
+    //MSG 운영체제에서 발생하는 메세지 정보를 저장하기 위한 구조체
+    MSG message;
+
+
+    /* 2. 메세지 루프
+        메세지의 종류
+        1. GetMessage : 메세지를 꺼내올 수 있을 때까지 멈춰있는 함수(일반프로그램에서 많이 사용)
+           메세지 큐로부터 '하나'의 메세지를 가져오는 역할을 한다. 
+            →하나씩 차근차근, 안전해!
+            →데이터가 왕마니 들어오면 병목현상발생
+           메세지 큐가 비어있을 경우(즉, 발생한 메세지가 없을 경우) 메세지가 들어올 때까지 대기한다.
+           비동기상태, 입력시 룰루랄라
+
+        2. PeekMessage : 메세지가 없더라도 반환되는 함수(게임은 이거. 캐릭터 잠수 붙박이해도 게임은 돌아가니까. but ... 고 성 능 타 이 머... 가 필요..)
+           아무런 입력, 동작을 안해도 무한으로~즐기는~ 송수신상태    
+    */
+    while (GetMessage(&message, 0, 0, 0))
+    {
+            TranslateMessage(&message);
+            DispatchMessage(&message);
+    }
+    /*
+            TranslateMessage(&message); 키보드의 입력 메세지 처리를 담당.
+                                        입력된 키가 문자키인지 확인후 대소문자, 한글, 영문인지에 대한 WM_CHAR메세지를 발생시킨다.
+            DispatchMessage(&message);  윈도우 프로시져에서 전달된 메세지를 실제 윈도우로 전달
+
+    */
+
+    return (int)message.wParam;
+}
+
+LRESULT CALLBACK WndProc(HWND hwnd, UINT imsg, WPARAM wparam, LPARAM lparam) {
+    switch (imsg) {
+    case WM_CREATE:
+        break;
+    case WM_DESTROY:
+        PostQuitMessage(0);
+        return 0;
+    }
+    return DefWindowProc(hwnd, imsg, wparam, lparam);
+}
+
+        /*
+        * WM_PAINT
+        윈도우를 다시 그려야할 때 발생하는 메세지
+        1. 윈도우가 처음 만들어졌을 때
+        2. 윈도우 크기를 조절할 때
+        3. 윈도우가 다른 윈도우에 가려졌다가 다시 보일 때
+        4. 함수 호출시 : InvalidateRect, Invalidate, UpdateAllViews 등등...
+
+        *요새 게임은 gpu중심, cpu 메모리 할당을 늘리고 gpu중심으로 개발!
+        * 그림... 넣으면 버버벅... 하니까... 그래픽스 최적화 필요
+        */
+
+
+//  함수: WndProc(HWND, UINT, WPARAM, LPARAM)
+
+//  용도: 주 창의 메시지를 처리합니다.
+
+//  WM_COMMAND  - 애플리케이션 메뉴를 처리합니다.
+//  WM_PAINT    - 주 창을 그립니다.
+//  WM_DESTROY  - 종료 메시지를 게시하고 반환합니다.
+
+▶ 충돌과 도형. 객체와 객체 충돌, object와 charactor의 충돌 등등,
+충돌을 구현할 때 pixcel로 구현하는게 좋아요!
+object는 상시충돌감지상태..
+ - 픽셀충돌->색상값으로 구현하면 편리.
+                SetPixel(hdc, rand() % 800, rand() % 800, RGB(0, 0, 0));
+    if 니가 가려는데가 픽셀색상이 마젠타라면? 못가 니좌표 -1;
+        버그,,, 프로그래머에 의한.
+        예외처리가 없으면 무조권 버그발생. (맵탈출. 꼼꼼히 물샐틈없이 화면에서 다 막아놔야해.)
+
+ - 원충돌
+    Ellipse(hdc, 300,100,200,200);
+    빠르다. (반지름거리 안에 들어오기만 하면 판정내면 되니까.)
+    심플하다.
+    일반적인 형태가 아니기때문에 충돌문을 내가 만들어야한다.
+
+ - 네모충돌
+    Rectangle(hdc,100,100,200,200);
+    세상 모든게 네모의꿈. 그래서 원과 다르게 사각형에 대해 지원하는 함수들은 있다.
+    API가 전제로 하는 모든 충돌은 다 rect충돌이다.
+    OBB와 ABB : 네모 위에 그래픽을 입힌것,,, 캐릭터 충돌판정시 픽셀충돌로 하면 깔끔하고 매끄럽게 이동경로를 제한할 수 있다. (계단덜덜이 ㄴㄴ!)
+    ***네모를 한번 설정하면 회전 등의 수정은 불가!! 같은 사이즈, 같은 모양에서 위치이동만 가능하다.
+
+
+    	//핵심
+	_currentScene = _hw;
+	//<->  혹은 <!-!>의 형태를 이용
+	assert(_currentScene != nullptr);
+	//static_assert
+
+    	▶assert
+	-"디버깅모드"에서 동작하는오류검출용 함수
+	릴리즈모드에서는 동작하지 않는다.
+
+	- assert가 걸리게 되면 버그 발생 위치와 콜스택, 그리고 변수에 대한 잘못된 참조값을 볼 수 있다. (프로그래머가 예외처리를 했을 경우)
+	- 편리한 디버깅을 위해서 예외처리는 if로 거르고, 핵심파트에만 사용한다.
+
+	동작방식
+	Expression -> false ->assert error
+	 ! 거짓일 때 발동 !
+	 대부분의 문법은 true일 때 동작하게 되어있지만,
+	 assert는 false일 때 동작한다.
+	  꼭 일어나야 하는 동작을 명시하면
+	  꼭 일어나야하는 사건이 일어나지 않을 때 assert가 뜬다.
+
+	예시 ) assert(A !=NULL)
+		A가 NULL이 아니면 true이므로 pass
+		A가 NULL이면 false이므로 발동
+
+	assert() : [C] 컴파일타임을 지나 프로그램을 실행시키고, 문제를 파악(런타임)
+		에러창 팝업
+	static_assert : [C++] 컴파일중에 문제를 파악 (컴파일타임) -> (컴파일 타임->상수)
+		하단 출력문구에 출력됨
