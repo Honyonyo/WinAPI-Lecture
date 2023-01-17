@@ -6,9 +6,8 @@ HRESULT TilemapScene::init(void)
 	GameNode::init(true);
 	_map = new MapMaker;
 	start();
-	SOUNDMANAGER->setUp("Resources/Sound/blueming.mp3", SOUND_BGM,true, true);
-	SOUNDMANAGER->play(SOUND_BGM, 1.0f);
 
+	SOUNDMANAGER->setUp("블루밍", "Resources/Sound/blueming.mp3", SOUNDKIND::SOUND_BGM, true, true);
 	return S_OK;
 }
 
@@ -33,6 +32,21 @@ void TilemapScene::update(void)
 	{
 		SCENEMANAGER->changeScene("로켓씬");
 	}
+
+	if (KEYMANAGER->isOnceKeyDown(VK_RETURN))
+	{
+		SOUNDMANAGER->play("블루밍", 1.0f);
+	}
+
+	if (KEYMANAGER->isOnceKeyDown('P'))
+	{
+		SOUNDMANAGER->pauseAndResume("블루밍");
+	}
+	if (KEYMANAGER->isOnceKeyDown(VK_SPACE)) 
+	{
+		SOUNDMANAGER->stop("블루밍");
+	}
+
 	SOUNDMANAGER->update();
 }
 

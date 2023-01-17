@@ -30,24 +30,26 @@
 
 */
 
-//enum class SOUNDKIND : UINT8
-//{
-//	SOUND_BGM = 0,
-//	SOUND_EFFECT_1,
-//	SOUND_EFFECT_2,
-//	SOUND_END
-//};
-enum SOUNDKIND
+enum class SOUNDKIND : UINT8
 {
 	SOUND_BGM = 0,
 	SOUND_EFFECT_1,
 	SOUND_EFFECT_2,
 	SOUND_END
 };
-using namespace FMOD;
+
 
 #define EXTRA_SOUND_CHANNEL 5		//여분의 채널 개수
-#define TOTAL_SOUND_CHANNEL (SOUND_END) + EXTRA_SOUND_CHANNEL		//총 사운드 개수
+#define TOTAL_SOUND_CHANNEL (static_cast<int>(SOUNDKIND::SOUND_END)) + EXTRA_SOUND_CHANNEL		//총 사운드 개수
+
+using namespace FMOD;
+
+struct scGroup
+{
+	Sound* sound;
+	Channel* channel;
+	SOUNDKIND soundkind;
+};
 
 class SoundManager : public SingletonBase <SoundManager>
 {
@@ -56,13 +58,35 @@ private:
 	Sound** _sound;		//구체적인 실행제어
 	Channel** _channel;	//서라운드채널, 메모리버퍼
 
+	map<string, Sound*> _mapSound;
+	map<string, Channel*> _mapChannel;
+	map<string, scGroup*> _mapSC;
+
 public:
 	HRESULT init(void);
 	void release(void);
 	void update(void);
 
-	void setUp(char* fileName, int soundKind, bool backGround, bool loop);
-	void play(int soundKind, float volume);
+	void setUp(string key, char* fileName, SOUNDKIND soundKind, bool backGround, bool loop);
+	void play(string key, float volume);
+	bool pauseAndResume(string key);
+	void pauseAndResume(string key, bool paused);
+	void stop(string key);
+
+	scGroup* findSound(string key)
+	{
+		auto findkey = _mapSC.find(key);
+
+		if (findkey != _mapSC.end())
+		{
+			return findkey->second;
+		}
+		else
+		{
+			return nullptr;
+			cout << "해당하는 노래가 없다. key : " << key << endl;
+		}
+	}
 
 	SoundManager();
 };
