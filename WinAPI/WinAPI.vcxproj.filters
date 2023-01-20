@@ -142,6 +142,9 @@
     <ClCompile Include="SoundManager.cpp">
       <Filter>API FrameWork\Manager</Filter>
     </ClCompile>
+    <ClCompile Include="JsonSaveLoader.cpp" />
+    <ClCompile Include="Quest.cpp" />
+    <ClCompile Include="QuestSample.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C3DMatrix.h">
@@ -216,7 +219,6 @@
     <ClInclude Include="BulletManager.h">
       <Filter>HomeWork\ShottingGame\Bullet</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h" />
     <ClInclude Include="Timer.h">
       <Filter>API FrameWork\Manager</Filter>
     </ClInclude>
@@ -244,8 +246,16 @@
     <ClInclude Include="SoundManager.h">
       <Filter>API FrameWork\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="JsonSaveLoader.h" />
+    <ClInclude Include="Quest.h" />
+    <ClInclude Include="QuestSample.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="WinAPI.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Quest.json" />
+    <None Include="Charactor.json" />
+    <None Include="Item.json" />
   </ItemGroup>
 </Project>

@@ -157,12 +157,15 @@
     <ClCompile Include="GImage.cpp" />
     <ClCompile Include="ImageManager.cpp" />
     <ClCompile Include="IWindowMessage.cpp" />
+    <ClCompile Include="JsonSaveLoader.cpp" />
     <ClCompile Include="KeyManager.cpp" />
     <ClCompile Include="MainGame.cpp" />
     <ClCompile Include="MapMaker.cpp" />
     <ClCompile Include="Minion.cpp" />
     <ClCompile Include="Pattern.cpp" />
     <ClCompile Include="ProgressBar.cpp" />
+    <ClCompile Include="Quest.cpp" />
+    <ClCompile Include="QuestSample.cpp" />
     <ClCompile Include="Rocket.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
@@ -211,14 +214,16 @@
     <ClInclude Include="GImage.h" />
     <ClInclude Include="ImageManager.h" />
     <ClInclude Include="IWindowMessage.h" />
+    <ClInclude Include="JsonSaveLoader.h" />
     <ClInclude Include="KeyManager.h" />
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="MapMaker.h" />
     <ClInclude Include="Minion.h" />
     <ClInclude Include="Pattern.h" />
     <ClInclude Include="ProgressBar.h" />
+    <ClInclude Include="Quest.h" />
+    <ClInclude Include="QuestSample.h" />
     <ClInclude Include="RandomFunction.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="Rocket.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
@@ -236,6 +241,11 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="WinAPI.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Charactor.json" />
+    <None Include="Item.json" />
+    <None Include="Quest.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

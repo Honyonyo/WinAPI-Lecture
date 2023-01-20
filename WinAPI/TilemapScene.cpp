@@ -64,10 +64,10 @@ void TilemapScene::start(void)
 {
 	do
 	{
-		system("cls");
+		//system("cls");
 		cout << "Ä­¼ö¸¦ ÀÔ·ÂÇÏ½Ê½Ã¿À. (2~100Ä­±îÁö)" << endl;
 		std::cin >> _number;
-		system("cls");
+		//system("cls");
 	} while (_number > 100);
 	cout << "¸ðÀÇ Å¸ÀÏ¸Ê Ä­¼ö : " << _number << endl;
 	_map->init(_number);

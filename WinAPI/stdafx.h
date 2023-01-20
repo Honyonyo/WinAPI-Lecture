@@ -25,9 +25,12 @@
 #pragma comment (lib ,"winmm.lib")
 //#pragma comment (lib ,"FMOD/lib/x64/FOMD/fmodex_vc.lib")
 #pragma comment (lib ,"FMOD/lib/FMOD/fmodex64_vc.lib")
+#pragma comment(lib, "JsonCPP/lib_json/json_vc71_libmtd.lib")
+//json_vc71_libmtd
 
 //! 외부 헤더파일
 #include "FMOD\inc\FMOD\fmod.hpp"
+#include "JsonCPP/include/json/json.h"
 
 //!C 런타임 헤더파일
 #include <stdio.h>
@@ -60,7 +63,9 @@ VS에서의 문자표현
 */
 
 //!C++런타임 헤더파일
+#include <fstream>
 #include <iostream>
+#include <functional>
 /*
 c++ 11에서 추가된 시간 관련 라이브러리
 기존 c런타임에서 제공하는 time함수보다 더 다양하고 확장된 기능 제공
@@ -68,11 +73,13 @@ c++ 11에서 추가된 시간 관련 라이브러리
 os와 독립적으로 적용
 */
 
+
 #include <chrono>
 #include <random>	//메르센트위스터 난수
 #include <vector>	//동적배열
 #include <list>
 #include <map>		//레드블랙트리를 기반으로 키와 밸류를 가지는 자료형
+#include <queue>
 /*
 unordered_map : Hash자료구조
 중복된 데이터를 허용하지 않는다.
@@ -131,6 +138,7 @@ ID2D1HwndRenderTarget*	_ID2DRenderTarget = nullptr;
 #include "Utils.h"
 #include "TimeManager.h"
 #include "SceneManager.h"
+#include "JsonSaveLoader.h"
 
 using namespace MY_UTIL;
 
@@ -142,7 +150,7 @@ using namespace MY_UTIL;
 #define SOUNDMANAGER SoundManager::getSingleton()
 #define TIMEMANAGER TimeManager ::getSingleton() // 타임매니저
 #define SCENEMANAGER SceneManager ::getSingleton()
-
+#define JSONDATAMANAGER JsonSaveLoader::getSingleton()
 
 // # 매크로 # 윈도우 창 초기화
 //전체화면

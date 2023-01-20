@@ -67,7 +67,7 @@ public:
 	void release(void);
 	void update(void);
 
-	void setUp(string key, char* fileName, SOUNDKIND soundKind, bool backGround, bool loop);
+	void setUp(string key, string fileName, SOUNDKIND soundKind, bool backGround, bool loop);
 	void play(string key, float volume);
 	bool pauseAndResume(string key);
 	void pauseAndResume(string key, bool paused);

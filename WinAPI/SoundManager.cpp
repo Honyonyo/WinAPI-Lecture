@@ -73,32 +73,35 @@ void SoundManager::update(void)
 	_system->update();
 }
 
-void SoundManager::setUp(string key, char* fileName, SOUNDKIND soundKind, bool backGround, bool loop)
+void SoundManager::setUp(string key, string fileName, SOUNDKIND soundKind, bool backGround, bool loop)
 {
 	scGroup* soundGroup;
 	soundGroup = new scGroup;
 	memset(&soundGroup->sound, 0, sizeof(Sound*));
 	memset(&soundGroup->channel, 0, sizeof(Channel*));
+	cout << "값넣기전"<<soundGroup->sound << endl;
+
 	soundGroup->soundkind = soundKind;
 
 	if (loop)
 	{
 		if (backGround)
 		{
-			_system->createStream(fileName, FMOD_LOOP_NORMAL, 0, &soundGroup->sound);
+			_system->createStream(fileName.c_str(), FMOD_LOOP_NORMAL, 0, &soundGroup->sound);
 		}//end background loop
 		else
 		{
 			//동시에 여러음원 재생 가능
-			_system->createSound(fileName, FMOD_LOOP_NORMAL, 0, &soundGroup->sound);
+			_system->createSound(fileName.c_str(), FMOD_LOOP_NORMAL, 0, &soundGroup->sound);
 		}//end effect loop
 	}//end if loop
 	else
 	{
-		_system->createSound(fileName, DMDFO_DEFAULT, 0, &soundGroup->sound);
+		_system->createSound(fileName.c_str(), DMDFO_DEFAULT, 0, &soundGroup->sound);
 	}//end loop else
 
 	_mapSC.insert(make_pair(key, soundGroup));
+	cout << soundGroup->sound << endl;
 }
 	
 //프로그래스바, 사운드, 이펙트, 애니메이션 계열
